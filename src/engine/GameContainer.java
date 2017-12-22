@@ -1,17 +1,29 @@
+package engine;// credit Majoowip on youtube
+
 public class GameContainer implements Runnable{
     private Thread thread;
+    private Window window;
+    private Renderer renderer;
+    private Input input;
+    private AbstractGame game;
 
     private boolean running = false;
-    private final double UPDATE_CAP = 1.0/60.0;
+    private final double UPDATE_CAP = 0.2; //1.0/60.0;
+    private int width = 10, height = 10;
+    private float scale = 5f;
+    private String title = "MajEngine v1.0";
 
-    public GameContainer(){
-
-
+    public GameContainer(AbstractGame game){
+        this.game = game;
     }
 
     public void start(){
+        window = new Window(this);
+        renderer = new Renderer(this);
+        input = new Input(this);
         thread = new Thread(this);
         thread.run(); // calls run(), futher down
+
     }
 
     public void stop(){
@@ -45,7 +57,8 @@ public class GameContainer implements Runnable{
 
                 unprocessedTime -= UPDATE_CAP;
                 render = true;
-                //TODO Update game
+                game.update(this, (float)UPDATE_CAP);
+                input.update();
                 if(frameTime >= 1.0){
                     frameTime = 0;
                     fps = frames;
@@ -56,7 +69,9 @@ public class GameContainer implements Runnable{
             }
 
             if(render){
-                // TODO render game
+                renderer.clear();
+                game.render(this, renderer);
+                window.update();
                 frames++;
             } else {
                 try{
@@ -73,9 +88,52 @@ public class GameContainer implements Runnable{
 
     }
 
-    public static void main(String[] args) {
-        GameContainer gc = new GameContainer();
-        gc.start();
+    public void setThread(Thread thread) {
+        this.thread = thread;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Thread getThread() {
+        return thread;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public Window getWindow() {
+        return window;
+    }
+
+    public Input getInput() {
+        return input;
     }
 }
 
