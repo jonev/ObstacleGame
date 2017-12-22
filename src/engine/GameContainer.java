@@ -10,7 +10,7 @@ public class GameContainer implements Runnable{
     private boolean running = false;
     private final double UPDATE_CAP = 0.2; //1.0/60.0;
     private int width = 10, height = 10;
-    private float scale = 5f;
+    private float scale = 100f;
     private String title = "MajEngine v1.0";
 
     public GameContainer(AbstractGame game){

@@ -16,7 +16,6 @@ public class Renderer {
     }
 
     public void clear(){
-        int f = 0;
         for (int i = 0; i < p.length; i++) {
             p[i] = 0;
         }
@@ -30,15 +29,18 @@ public class Renderer {
     }
 
     public void drawGameBoard(GameManager gm){
-        drawPlayer(gm.getPlayerXpos(), gm.getPlayerYpos());
-    }
-
-    private void drawPlayer(int xPos, int yPos){
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < 1; j++) {
-                setPixel(i+xPos, j+yPos, 0xffff);
+        drawPlayer(gm.getPlayerPos());
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                if(gm.getObsticles()[i][j]){
+                    setPixel(i, j, 0xffff);
+                }
             }
         }
+    }
+
+    private void drawPlayer(int pos){
+        setPixel(0, pos, 0xfffff);
     }
 
 
