@@ -8,10 +8,12 @@ import engine.Renderer;
 import java.awt.event.KeyEvent;
 
 public class GameManager extends AbstractGame {
+    public static final int BOARDSIZE = 10;
     private int playerPos = 0;
+    private int round = 0;
     private int currentObsticle = 0;
-    private boolean[][] obsticles = new boolean[10][10];
-    private boolean[][] obsticlePattern = new boolean[10][10];
+    private boolean[][] obsticles = new boolean[BOARDSIZE][BOARDSIZE]; // | from top to bottom | from left to right
+    private boolean[][] obsticlePattern = new boolean[BOARDSIZE][1]; // | from top to bottom | from left to right
 
     public GameManager() {
         //for (int i = 0; i < 10; i++) {
@@ -22,10 +24,10 @@ public class GameManager extends AbstractGame {
         //    }
         //}
         obsticlePattern[0][0] = true;
-        obsticlePattern[0][2] = true;
-        obsticlePattern[0][4] = true;
-        obsticlePattern[0][6] = true;
-        obsticlePattern[0][8] = true;
+        obsticlePattern[2][0] = true;
+        obsticlePattern[4][0] = true;
+        obsticlePattern[6][0] = true;
+        obsticlePattern[8][0] = true;
 
     }
 
@@ -40,16 +42,38 @@ public class GameManager extends AbstractGame {
             if(playerPos<9) playerPos++;
         }
     }
-
     @Override
     public void render(GameContainer gc, Renderer renderer) {
-        if(currentObsticle < 9) currentObsticle++;
-        for (int i = 0; i < currentObsticle; i++) {
-            for (int j = 0; j < 10; j++) {
-                obsticles[i][j] = obsticlePattern[i][j];
+        checkForLoss();
+        for (int horizontal = 1; horizontal < BOARDSIZE; horizontal++) {
+            for (int vertical = 0; vertical < BOARDSIZE; vertical++) {
+                obsticles[vertical][horizontal-1] = obsticles[vertical][horizontal];
+            }
+        }
+        if(currentObsticle < obsticlePattern[0].length){
+            for (int vertical = 0; vertical < BOARDSIZE; vertical++) {
+                obsticles[vertical][BOARDSIZE-1] = obsticlePattern[vertical][currentObsticle];
+            }
+            currentObsticle++;
+        } else {
+            for (int vertical = 0; vertical < BOARDSIZE; vertical++) {
+                obsticles[vertical][BOARDSIZE-1] = false;
             }
         }
         renderer.drawGameBoard(this);
+        if(round > (BOARDSIZE + obsticlePattern[0].length)){
+            System.out.println("Win");
+            round = 0;
+            currentObsticle = 0;
+        } else {
+            round++;
+        }
+    }
+
+    private void checkForLoss(){
+        if(obsticles[playerPos][0]){
+            System.out.println("Loss");
+        }
     }
 
     public int getPlayerPos() {
